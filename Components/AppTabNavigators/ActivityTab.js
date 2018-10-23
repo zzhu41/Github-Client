@@ -5,6 +5,9 @@ import { createBottomTabNavigator, createStackNavigator } from 'react-navigation
 
 export default class ActivityTab extends React.Component {
 
+  /**
+   * TODO: explore acivity of your friends
+   */
   render() {
     const { navigate } = this.props.navigation;
     return (

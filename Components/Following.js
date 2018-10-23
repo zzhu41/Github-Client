@@ -1,26 +1,49 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView} from 'react-native';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
-import { Content } from 'native-base';
+import { Avatar, ListItem, List } from 'react-native-elements';
+import { Content, Container } from 'native-base';
+import { userInfo } from '../API/UserInfo';
 
 export default class Following extends React.Component {
-    static navigationOptions = {
-        title: 'Profile User Name'
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            following : []
+        }
     }
+
+    static navigationOptions = {
+        title: 'Following'
+    }
+
+    componentWillMount() {
+        userInfo.getFollowing().then(((res) => {
+            this.setState({
+                following: res
+            })
+        }))
+    }
+
     render() {
         return (
-            <View style={styles.container}>
-                <Text>This Tab is the following page</Text>
-            </View>
+            <Container>
+                <View>
+                    {
+                        this.state.following.map((item, i) => (
+                            <ListItem
+                                key = {i}
+                                roundAvatar
+                                title = { item.login }
+                                avatar = {{ uri: item.avatar_url }}
+                                chevronColor="white"
+                                chevron
+                            />
+                        ))
+                    }
+                </View>
+            </Container>
         );
     }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

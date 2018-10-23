@@ -1,26 +1,49 @@
 import React from 'react';
 import { StyleSheet, Text, View, ScrollView} from 'react-native';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
-import { Content } from 'native-base';
+import { Avatar, ListItem, List } from 'react-native-elements';
+import { Content, Container } from 'native-base';
+import { userInfo } from '../API/UserInfo';
 
 export default class Follower extends React.Component {
-    static navigationOptions = {
-        title: 'Profile User Name'
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            followers : []
+        }
     }
+
+    static navigationOptions = {
+        title: 'Followers'
+    }
+
+    componentWillMount() {
+        userInfo.getFollowers().then(((res) => {
+            this.setState({
+                followers: res
+            })
+        }))
+    }
+
     render() {
         return (
-            <View style={styles.container}>
-                <Text>This is the follower page</Text>
-            </View>
+            <Container>
+                <View>
+                    {
+                        this.state.followers.map((item, i) => (
+                            <ListItem
+                                key = {i}
+                                roundAvatar
+                                title = { item.login }
+                                avatar = {{ uri: item.avatar_url }}
+                                chevronColor="white"
+                                chevron
+                            />
+                        ))
+                    }
+                </View>
+            </Container>
         );
     }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

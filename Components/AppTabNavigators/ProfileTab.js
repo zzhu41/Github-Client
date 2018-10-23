@@ -5,10 +5,32 @@ import { Avatar, ListItem, List } from 'react-native-elements';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Repository from './Repository';
 import Stars from './Stars';
-
+import { userInfo } from '../../API/UserInfo'
 export default class ProfileTab extends React.Component {
+    
+    constructor(props) {
+        super(props);
+        this.state = {
+            user : {}
+        }
+    }
+
+    /**
+     * get basic user informations from github api 
+     */
+    componentWillMount() {
+        userInfo.getUserInfo().then(((res) => {
+            this.setState({
+                user: res
+            })
+        }))
+    }
+
+    /**
+     * set the title of profile tab page
+     */
     static navigationOptions = {
-        title: 'Profile User Name'
+        title: 'Me'
     }
 
     render() {
@@ -21,10 +43,10 @@ export default class ProfileTab extends React.Component {
                             <View style = {{ flex:1}}>
                                 <Image
                                     style={{width: width*0.3, height: width*0.3, borderRadius: width*0.15}}
-                                    source={{uri: 'https://bootdey.com/img/Content/avatar/avatar6.png'}}
+                                    source={{uri: this.state.user.avatar_url}}
                                     />
                             </View>
-                            <View style = {{ flex:2 }}>
+                            <View style = {{ flex:2 , marginTop: width*0.05}}>
                                 <View
                                     style={{
                                         flexDirection: 'row',
@@ -33,16 +55,19 @@ export default class ProfileTab extends React.Component {
                                     }}>
                                     <View style={{ alignItems: 'center' }}>
                                         <Text onPress = {()=>{
-                                            this.props.navigation.navigate('Follower');
-                                        }}>4</Text>
+                                            this.props.navigation.navigate('Followers');
+                                        }}>{ this.state.user.followers }</Text>
                                         <Text style={{ fontSize: 10, color: 'grey' }}>Followers</Text>
                                     </View>
                                     <View style={{ alignItems: 'center' }}>
                                         <Text onPress={()=>{
                                             this.props.navigation.navigate('Following');
-                                        }}>4</Text>
+                                        }}>{ this.state.user.following }</Text>
                                         <Text style={{ fontSize: 10, color: 'grey' }}>Following</Text>
                                     </View>
+                                </View>
+                                <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
+                                    <Text style={{ fontSize: 15, color: 'grey' }}>{ this.state.user.bio }</Text>
                                 </View>
                             </View>
                         </View>
@@ -51,12 +76,12 @@ export default class ProfileTab extends React.Component {
                         <List>
                             <ListItem
                                 title="Name"
-                                rightTitle={'Zhanyan Zhu'}
+                                rightTitle={ this.state.user.name }
                                 hideChevron
                             />
                             <ListItem
                                 title="Username"
-                                rightTitle={'zzhu41'}
+                                rightTitle={ this.state.user.login }
                                 hideChevron
                             />
                             <ListItem
@@ -66,21 +91,22 @@ export default class ProfileTab extends React.Component {
                             />
                             <ListItem
                                 title="Email"
-                                rightTitle={'zhuzhanyan97@gmail.com'}
+                                rightTitle={ this.state.user.email }
                                 hideChevron
                             />
                             <ListItem
                                 title="Location"
-                                rightTitle={'Champaign'}
+                                rightTitle= { this.state.user.location }
                                 hideChevron
                             />
                             <ListItem
                                 title="Company"
-                                rightTitle={'UIUC'}
+                                rightTitle = { this.state.user.company }
                                 hideChevron
                             />
                             <ListItem
                                 title="Create date"
+                                rightTitle = { this.state.user.created_at }
                                 hideChevron
                             />
                         </List>
