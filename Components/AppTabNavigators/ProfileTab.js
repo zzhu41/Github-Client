@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, ScrollView, Dimensions, Button } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, Dimensions, Button, RefreshControl, AsyncStorage} from 'react-native';
 import { Container, Header, Body, Text, Grid, Row, Col, Content, Separator } from 'native-base';
 import { Avatar, ListItem, List } from 'react-native-elements';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
@@ -11,18 +11,42 @@ export default class ProfileTab extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user : {}
+            user : {},
+            refreshing: false
         }
     }
 
     /**
      * get basic user informations from github api 
      */
-    componentWillMount() {
-        userInfo.getUserInfo().then(((res) => {
+    async componentWillMount() {
+        const value = await AsyncStorage.getItem('name');
+        console.log(value)
+        let username;
+        if (this.props.navigation.state.params) {
+            username = this.props.navigation.state.params.login
+        } else {
+            username = 'zzhu41';
+        }
+        userInfo.getUserInfo(username).then((async (res) => {
             this.setState({
-                user: res
+                user: res,
+                refreshing: false
             })
+            try {
+                await AsyncStorage.multiSet([
+                    ['username', res.login.toString()], 
+                    ['name', res.name],
+                    ['followers_num', res.followers.toString()],
+                    ['following_num', res.following.toString()],
+                    ['company', res.company.toString()],
+                    ['location', res.location.toString()],
+                    ['bio', res.bio.toString()],
+                    ['avatar_url', res.avatar_url.toString()]
+                ]);
+            } catch (error) {
+                console.log(error);
+            }
         }))
     }
 
@@ -30,13 +54,37 @@ export default class ProfileTab extends React.Component {
      * set the title of profile tab page
      */
     static navigationOptions = {
-        title: 'Me'
+        title: 'Profile'
     }
 
+    _onRefresh = () => {
+        this.setState({user : {},
+            refreshing: true});
+        let username;
+        if (this.props.navigation.state.params) {
+            username = this.props.navigation.state.params.login
+        } else {
+            username = 'zzhu41';
+        }
+        userInfo.getUserInfo(username).then(((res) => {
+            console.log(res.following)
+            this.setState({
+                user: res,
+                refreshing: false
+            })
+        }))
+    }
+    
     render() {
         const { width } = Dimensions.get('window');
         return (
-            <Container>
+            <ScrollView> 
+                refreshControl={
+                    <RefreshControl
+                        refreshing={this.state.refreshing}
+                        onRefresh={this._onRefresh}
+                    />
+                }
                 <Content>
                     <View style = {{ paddingTop: 20, paddingLeft: 10}}>
                         <View style={{flexDirection: 'row'}}>
@@ -55,13 +103,13 @@ export default class ProfileTab extends React.Component {
                                     }}>
                                     <View style={{ alignItems: 'center' }}>
                                         <Text onPress = {()=>{
-                                            this.props.navigation.navigate('Followers');
+                                            this.props.navigation.push('Followers', {user: this.state.user.login})
                                         }}>{ this.state.user.followers }</Text>
                                         <Text style={{ fontSize: 10, color: 'grey' }}>Followers</Text>
                                     </View>
                                     <View style={{ alignItems: 'center' }}>
                                         <Text onPress={()=>{
-                                            this.props.navigation.navigate('Following');
+                                            this.props.navigation.push('Following', {user: this.state.user.login})
                                         }}>{ this.state.user.following }</Text>
                                         <Text style={{ fontSize: 10, color: 'grey' }}>Following</Text>
                                     </View>
@@ -115,14 +163,14 @@ export default class ProfileTab extends React.Component {
                         <List>
                             <ListItem
                                 onPress = {() => {
-                                    this.props.navigation.navigate('Repository');
+                                    this.props.navigation.push('Repository', {user: this.state.user.login})
                                 }}
                                 title = "Repositories"
                                 hideChevron
                             />
                             <ListItem
                                 onPress = {() => {
-                                    this.props.navigation.navigate('Stars');
+                                    this.props.navigation.push('Stars', {user: this.state.user.login})
                                 }}
                                 title="Stars"
                                 hideChevron
@@ -130,7 +178,7 @@ export default class ProfileTab extends React.Component {
                         </List>
                     </View>
                 </Content>
-            </Container> 
+            </ScrollView> 
         );
     }
 }
