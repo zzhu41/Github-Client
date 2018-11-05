@@ -8,7 +8,9 @@ import ProfileTab from './Components/AppTabNavigators/ProfileTab';
 import ActivityTab from './Components/AppTabNavigators/ActivityTab';
 import Follower from './Components/Follower';
 import Following from './Components/Following';
-import Web from './Components/WebView'
+import Web from './Components/WebView';
+import SearchUserPage from './Components/SearchUserPage';
+import VisualizationPage from './Components/VisualizationPage';
 export default class App extends React.Component {
   render() {
     return (
@@ -20,6 +22,9 @@ export default class App extends React.Component {
 const Activity = createStackNavigator({
   Activity: {
     screen: ActivityTab
+  },
+  Web: {
+    screen: Web
   }
 })
 
@@ -41,6 +46,12 @@ const Profile = createStackNavigator({
   },
   Web: {
     screen: Web
+  },
+  SearchUser: {
+    screen: SearchUserPage
+  },
+  Visual: {
+    screen: VisualizationPage
   }
 })
 
@@ -57,7 +68,7 @@ Profile.navigationOptions = ({ navigation }) => {
 };
 
 const TabNavigator = createBottomTabNavigator({
-  Activity: Activity,
+  Search: Activity,
   Profile: Profile
 })
 

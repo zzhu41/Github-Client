@@ -60,7 +60,7 @@ export default class Repository extends React.Component {
                                 key = {i}
                                 title={`${l.owner.login}/${l.name}`}
                                 subtitle={l.description}
-                                chevronColor="white"
+                                hideChevron
                             />
                         ))
                     }

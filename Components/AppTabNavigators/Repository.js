@@ -60,6 +60,7 @@ export default class Repository extends React.Component {
                                             [
                                                 {text: 'Star', onPress: async() => await userInfo.starRepo(l.owner.login,l.name)},
                                                 {text: 'Unstar', onPress: async () => await userInfo.unstarRepo(l.owner.login,l.name)},
+                                                {text: 'Data', onPress:() =>  this.props.navigation.push('Visual')}, 
                                                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
                                             ],
                                             { cancelable: false }
@@ -69,7 +70,7 @@ export default class Repository extends React.Component {
                                 key = {i}
                                 title={`${l.owner.login}/${l.name}`}
                                 subtitle={l.description}
-                                chevronColor="white"
+                                hideChevron
                             />
                         ))
                     }

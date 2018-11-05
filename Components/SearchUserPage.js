@@ -1,14 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, ScrollView} from 'react-native';
-import Stars from './Stars'
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import { SearchBar } from 'react-native-elements';
 import Search from 'react-native-search-box';
 import { Container, Header, Content, Body, Right, Left } from 'native-base';
-import { userInfo } from '../../API/UserInfo';
+import { userInfo } from '../API/UserInfo';
 import { Avatar, ListItem, List } from 'react-native-elements';
 
-export default class ActivityTab extends React.Component {
+export default class SearchUserPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -20,7 +19,7 @@ export default class ActivityTab extends React.Component {
 
   searchRepo = async(text) => {
     this.setState({ loading: true});
-    userInfo.repoSearch(text).then(((res) => {
+    userInfo.userSearch(text).then(((res) => {
       if (res.length === 0) {
         this.setState({
           repo: [],
@@ -50,7 +49,7 @@ export default class ActivityTab extends React.Component {
           <View style={{ flex: 1}}>
             <Search
               loading = {this.state.loading}
-              ref="search for repositories"
+              ref="search for users"
               onChangeText = {
                 (text) => {
                   console.log(`TEXT: ${text} CHANGED [DEBUG]`)
@@ -72,8 +71,9 @@ export default class ActivityTab extends React.Component {
                                 }
                             }
                             key = {i}
-                            title={l.full_name}
-                            subtitle={`Star:${l.stargazers_count}   Fork:${l.forks_count}`}
+                            title={l.login}
+                            roundAvatar
+                            avatar = {{ uri: l.avatar_url }}
                             hideChevron
                         />
                       ))

@@ -79,8 +79,7 @@ export default class Follower extends React.Component {
                                 roundAvatar
                                 title = { item.login }
                                 avatar = {{ uri: item.avatar_url }}
-                                chevronColor="white"
-                                chevron
+                                hideChevron
                             />
                         ))
                     }

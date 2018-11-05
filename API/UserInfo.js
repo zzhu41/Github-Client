@@ -4,6 +4,36 @@ const url = 'https://api.github.com';
 
 export const userInfo = {
     /**
+     * search for repositories
+     * @param {*} repoName 
+     */
+    async repoSearch(repoName) {
+        if (repoName === null) {
+            return;
+        }
+        return await fetch(`${url}/search/repositories?q=${repoName}`, {
+            headers: {
+              'Cache-Control': 'no-cache'
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+    },
+    async userSearch(userName) {
+        if (userName === null) {
+            return;
+        }
+        return await fetch(`${url}/search/users?q=${userName}`, {
+            headers: {
+              'Cache-Control': 'no-cache'
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+    },
+    /**
      * get basic user info
      */
     async getUserInfo(user) {

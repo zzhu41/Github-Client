@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Image, ScrollView, Dimensions, Button, RefreshControl, AsyncStorage} from 'react-native';
-import { Container, Header, Body, Text, Grid, Row, Col, Content, Separator } from 'native-base';
+import { Container, Header, Body, Text, Grid, Row, Col, Content, Separator, Left, Right} from 'native-base';
 import { Avatar, ListItem, List } from 'react-native-elements';
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import Repository from './Repository';
@@ -54,7 +54,8 @@ export default class ProfileTab extends React.Component {
      * set the title of profile tab page
      */
     static navigationOptions = {
-        title: 'Profile'
+        //title: 'Profile'
+        header: null
     }
 
     _onRefresh = () => {
@@ -78,107 +79,128 @@ export default class ProfileTab extends React.Component {
     render() {
         const { width } = Dimensions.get('window');
         return (
-            <ScrollView> 
-                refreshControl={
-                    <RefreshControl
-                        refreshing={this.state.refreshing}
-                        onRefresh={this._onRefresh}
-                    />
-                }
-                <Content>
-                    <View style = {{ paddingTop: 20, paddingLeft: 10}}>
-                        <View style={{flexDirection: 'row'}}>
-                            <View style = {{ flex:1}}>
-                                <Image
-                                    style={{width: width*0.3, height: width*0.3, borderRadius: width*0.15}}
-                                    source={{uri: this.state.user.avatar_url}}
-                                    />
-                            </View>
-                            <View style = {{ flex:2 , marginTop: width*0.05}}>
-                                <View
-                                    style={{
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-around',
-                                        alignItems: 'flex-end'
-                                    }}>
-                                    <View style={{ alignItems: 'center' }}>
-                                        <Text onPress = {()=>{
-                                            this.props.navigation.push('Followers', {user: this.state.user.login})
-                                        }}>{ this.state.user.followers }</Text>
-                                        <Text style={{ fontSize: 10, color: 'grey' }}>Followers</Text>
-                                    </View>
-                                    <View style={{ alignItems: 'center' }}>
-                                        <Text onPress={()=>{
-                                            this.props.navigation.push('Following', {user: this.state.user.login})
-                                        }}>{ this.state.user.following }</Text>
-                                        <Text style={{ fontSize: 10, color: 'grey' }}>Following</Text>
-                                    </View>
+            <Container>
+                <Header>
+                    <Left>
+                    </Left>
+                    <Body>
+                        <Text>
+                        Search
+                        </Text>
+                    </Body>
+                    <Right>
+                        <Button
+                            title="+"
+                            onPress = {
+                                () => {
+                                    this.props.navigation.push('SearchUser');
+                                }
+                            }
+                        />
+                    </Right>
+                </Header>
+                <ScrollView> 
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this._onRefresh}
+                        />
+                    }
+                    <Content>
+                        <View style = {{ paddingTop: 20, paddingLeft: 10}}>
+                            <View style={{flexDirection: 'row'}}>
+                                <View style = {{ flex:1}}>
+                                    <Image
+                                        style={{width: width*0.3, height: width*0.3, borderRadius: width*0.15}}
+                                        source={{uri: this.state.user.avatar_url}}
+                                        />
                                 </View>
-                                <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
-                                    <Text style={{ fontSize: 15, color: 'grey' }}>{ this.state.user.bio }</Text>
+                                <View style = {{ flex:2 , marginTop: width*0.05}}>
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-around',
+                                            alignItems: 'flex-end'
+                                        }}>
+                                        <View style={{ alignItems: 'center' }}>
+                                            <Text onPress = {()=>{
+                                                this.props.navigation.push('Followers', {user: this.state.user.login})
+                                            }}>{ this.state.user.followers }</Text>
+                                            <Text style={{ fontSize: 10, color: 'grey' }}>Followers</Text>
+                                        </View>
+                                        <View style={{ alignItems: 'center' }}>
+                                            <Text onPress={()=>{
+                                                this.props.navigation.push('Following', {user: this.state.user.login})
+                                            }}>{ this.state.user.following }</Text>
+                                            <Text style={{ fontSize: 10, color: 'grey' }}>Following</Text>
+                                        </View>
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
+                                        <Text style={{ fontSize: 15, color: 'grey' }}>{ this.state.user.bio }</Text>
+                                    </View>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                    <View>      
-                        <List>
-                            <ListItem
-                                title="Name"
-                                rightTitle={ this.state.user.name }
-                                hideChevron
-                            />
-                            <ListItem
-                                title="Username"
-                                rightTitle={ this.state.user.login }
-                                hideChevron
-                            />
-                            <ListItem
-                                title="Website"
-                                rightTitle={''}
-                                hideChevron
-                            />
-                            <ListItem
-                                title="Email"
-                                rightTitle={ this.state.user.email }
-                                hideChevron
-                            />
-                            <ListItem
-                                title="Location"
-                                rightTitle= { this.state.user.location }
-                                hideChevron
-                            />
-                            <ListItem
-                                title="Company"
-                                rightTitle = { this.state.user.company }
-                                hideChevron
-                            />
-                            <ListItem
-                                title="Create date"
-                                rightTitle = { this.state.user.created_at }
-                                hideChevron
-                            />
-                        </List>
-                    </View>
-                    <View>
-                        <List>
-                            <ListItem
-                                onPress = {() => {
-                                    this.props.navigation.push('Repository', {user: this.state.user.login})
-                                }}
-                                title = "Repositories"
-                                hideChevron
-                            />
-                            <ListItem
-                                onPress = {() => {
-                                    this.props.navigation.push('Stars', {user: this.state.user.login})
-                                }}
-                                title="Stars"
-                                hideChevron
-                            />
-                        </List>
-                    </View>
-                </Content>
-            </ScrollView> 
+                        <View>      
+                            <List>
+                                <ListItem
+                                    title="Name"
+                                    rightTitle={ this.state.user.name }
+                                    hideChevron
+                                />
+                                <ListItem
+                                    title="Username"
+                                    rightTitle={ this.state.user.login }
+                                    hideChevron
+                                />
+                                <ListItem
+                                    title="Website"
+                                    rightTitle={''}
+                                    hideChevron
+                                />
+                                <ListItem
+                                    title="Email"
+                                    rightTitle={ this.state.user.email }
+                                    hideChevron
+                                />
+                                <ListItem
+                                    title="Location"
+                                    rightTitle= { this.state.user.location }
+                                    hideChevron
+                                />
+                                <ListItem
+                                    title="Company"
+                                    rightTitle = { this.state.user.company }
+                                    hideChevron
+                                />
+                                <ListItem
+                                    title="Create date"
+                                    rightTitle = { this.state.user.created_at }
+                                    hideChevron
+                                />
+                            </List>
+                        </View>
+                        <View>
+                            <List>
+                                <ListItem
+                                    onPress = {() => {
+                                        this.props.navigation.push('Repository', {user: this.state.user.login})
+                                    }}
+                                    title = "Repositories"
+                                    hideChevron
+                                />
+                                <ListItem
+                                    onPress = {() => {
+                                        this.props.navigation.push('Stars', {user: this.state.user.login})
+                                    }}
+                                    title="Stars"
+                                    hideChevron
+                                />
+                            </List>
+                        </View>
+                    </Content>
+                </ScrollView> 
+            </Container>
         );
     }
 }
