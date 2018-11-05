@@ -3,6 +3,16 @@ import { personalToken } from '../auth';
 const url = 'https://api.github.com';
 
 export const userInfo = {
+    async getCommitStats(user, repo) {
+        return await fetch(`${url}/repos/${user}/${repo}/stats/commit_activity`, {
+            headers: {
+              'Cache-Control': 'no-cache'
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+    },
     /**
      * search for repositories
      * @param {*} repoName 

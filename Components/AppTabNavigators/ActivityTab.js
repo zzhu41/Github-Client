@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, Button, ScrollView, Alert} from 'react-native';
 import Stars from './Stars'
 import { createBottomTabNavigator, createStackNavigator } from 'react-navigation';
 import { SearchBar } from 'react-native-elements';
@@ -70,6 +70,21 @@ export default class ActivityTab extends React.Component {
                                 () => {
                                     this.props.navigation.navigate('Web', {url: l.html_url})
                                 }
+                            }
+                            onLongPress = {
+                              () => {
+                                  Alert.alert(
+                                      'Repo',
+                                      undefined,
+                                      [
+                                          {text: 'Star', onPress: async() => await userInfo.starRepo(l.owner.login,l.name)},
+                                          {text: 'Unstar', onPress: async () => await userInfo.unstarRepo(l.owner.login,l.name)},
+                                          {text: 'Data', onPress:() =>  this.props.navigation.push('Visual', {user: l.owner.login, repo: l.name})}, 
+                                          {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                                      ],
+                                      { cancelable: false }
+                                    )
+                              }
                             }
                             key = {i}
                             title={l.full_name}

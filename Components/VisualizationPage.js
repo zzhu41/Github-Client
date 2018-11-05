@@ -1,40 +1,38 @@
 import React from 'react'
 import { LineChart, YAxis, Grid } from 'react-native-svg-charts'
-import { View } from 'react-native'
- 
+import { View , Container, Text } from 'react-native'
+import { userInfo } from '../API/UserInfo'
 export default class VisualizationPage extends React.Component {
  
-    async componentWillMount() {
-        let username = 'zzhu41';
-        if (this.props.navigation.state.params) {
-            username = this.props.navigation.state.params.user;
+    constructor(props) {
+        super(props);
+        this.state = {
+            commitList : [],
+            loading: false
         }
-        userInfo.getRepoInfo(username).then((async (res) => {
-            this.setState({
-                repoList: res
-            })
-            let rlist = '';
-            res.map((item) => {
-                rlist += `${item.owner.login}/${item.name}` + '@';
-            })
-            try {
-                await AsyncStorage.setItem('repositories', rlist);
-            } catch (error) {
-                console.log(error);
+    }
+    
+    async componentWillMount() {
+        userInfo.getCommitStats(this.props.navigation.state.params.user, this.props.navigation.state.params.repo)
+        .then((async (res) => {
+            console.log('adsa')
+            let commitList = []
+            for (const index in res) {
+                commitList.push(res[index].total);
             }
+            this.setState({
+                commitList: commitList
+            })
         }))
     } 
 
     render() {
- 
-        const data = [ 50, 10, 40, 95, 12,412 ,213,21,32 ]
- 
         const contentInset = { top: 20, bottom: 20 }
  
         return (
             <View style={{ height: 200, flexDirection: 'row' }}>
                 <YAxis
-                    data={ data }
+                    data={ this.state.commitList }
                     contentInset={ contentInset }
                     svg={{
                         fill: 'grey',
@@ -45,7 +43,7 @@ export default class VisualizationPage extends React.Component {
                 />
                 <LineChart
                     style={{ flex: 1, marginLeft: 16 }}
-                    data={ data }
+                    data={ this.state.commitList }
                     svg={{ stroke: 'rgb(134, 65, 244)' }}
                     contentInset={ contentInset }
                 >
