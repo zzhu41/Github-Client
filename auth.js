@@ -1,1 +1,0 @@
-export const personalToken = 'ca1fcb81c9e924bf9f6c6e79a0a438505b4605f4';
