@@ -11,6 +11,7 @@ import Following from './Components/Following';
 import Web from './Components/WebView';
 import SearchUserPage from './Components/SearchUserPage';
 import VisualizationPage from './Components/VisualizationPage';
+import NotificatinTab from './Components/NotificationTab';
 export default class App extends React.Component {
   render() {
     return (
@@ -18,6 +19,15 @@ export default class App extends React.Component {
     );
   }
 }
+
+const Notification = createStackNavigator({
+  Notification: {
+    screen: NotificatinTab
+  },
+  Web: {
+    screen: Web
+  }
+})
 
 const Activity = createStackNavigator({
   Activity: {
@@ -31,6 +41,9 @@ const Activity = createStackNavigator({
 const Profile = createStackNavigator({
   Profile: {
     screen: ProfileTab
+  },
+  Notification: {
+    screen: NotificatinTab
   },
   Stars: {
     screen: Stars
@@ -69,6 +82,7 @@ Profile.navigationOptions = ({ navigation }) => {
 
 const TabNavigator = createBottomTabNavigator({
   Search: Activity,
+  Notification: NotificatinTab,
   Profile: Profile
 })
 

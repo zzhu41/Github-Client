@@ -3,6 +3,40 @@ import { personalToken } from '../auth';
 const url = 'https://api.github.com';
 
 export const userInfo = {
+    async putNotifications(time) {
+        return await fetch(`${url}/notifications?access_token=${personalToken}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Length': 0,
+                last_read_at: time
+            }
+    })
+        .then((res) => {
+            return res.json();
+        })
+    },
+    async getNotifications() {
+        return await fetch(`${url}/notifications?access_token=${personalToken}&all=true`, {
+            headers: {
+                'Cache-Control': 'no-cache',
+                all: false,
+                participating: true
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+    },
+    async getContributorsStats(user, repo) {
+        return await fetch(`${url}/repos/${user}/${repo}/stats/contributors`, {
+            headers: {
+              'Cache-Control': 'no-cache'
+            }
+        })
+        .then((res) => {
+            return res.json();
+        })
+    },
     async getCommitStats(user, repo) {
         return await fetch(`${url}/repos/${user}/${repo}/stats/commit_activity`, {
             headers: {

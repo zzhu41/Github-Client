@@ -18,9 +18,36 @@ export default class VisualizationPage extends React.Component {
     }
     
     async componentWillMount() {
+        userInfo.getContributorsStats(this.props.navigation.state.params.user, this.props.navigation.state.params.repo)
+        .then((async (res) => {
+            let totalCommits = 0;
+            let authorLogin = [];
+            let total = []
+            for (const index in res) {
+                totalCommits += res[index].total
+                authorLogin.push(res[index].author.login);
+                total.push(res[index].total)
+            }
+            authorLogin = authorLogin.slice(-5);
+            total = total.slice(-5);
+            this.setState({
+                topone : total[4],
+                toptwo : total[3],
+                topthree : total[2],
+                topfour : total[1],
+                topfive : total[0],
+                toponeName : authorLogin[4],
+                toptwoName : authorLogin[3],
+                topthreeName : authorLogin[2],
+                topfourName : authorLogin[1],
+                topfiveName : authorLogin[0]
+            })
+            for (let i = 0; i<5; i++) {
+                console.log(authorLogin[i]);
+            }
+        }))
         userInfo.getCommitStats(this.props.navigation.state.params.user, this.props.navigation.state.params.repo)
         .then((async (res) => {
-            console.log('adsa')
             let commitList = []
             for (const index in res) {
                 commitList.push(res[index].total);
@@ -28,6 +55,7 @@ export default class VisualizationPage extends React.Component {
             this.setState({
                 commitList: commitList
             })
+
         }))
     } 
 
@@ -35,27 +63,27 @@ export default class VisualizationPage extends React.Component {
         const data = [
             {
                 key: 1,
-                amount: 50,
+                amount: this.state.topone,
                 svg: { fill: '#600080' },
             },
             {
                 key: 2,
-                amount: 50,
+                amount: this.state.toptwo,
                 svg: { fill: '#9900cc' }
             },
             {
                 key: 3,
-                amount: 40,
+                amount: this.state.topthree,
                 svg: { fill: '#c61aff' }
             },
             {
                 key: 4,
-                amount: 95,
+                amount: this.state.topfour,
                 svg: { fill: '#d966ff' }
             },
             {
                 key: 5,
-                amount: 35,
+                amount: this.state.topfive,
                 svg: { fill: '#ecb3ff' }
             }
         ]
@@ -75,7 +103,7 @@ export default class VisualizationPage extends React.Component {
                         stroke={'black'}
                         strokeWidth={0.2}
                     >
-                        {data.amount}
+                        {'data.amount'}
                     </Text>
                 )
             })
@@ -104,17 +132,39 @@ export default class VisualizationPage extends React.Component {
                         <Grid/>
                     </LineChart>
                 </View>
-                <View style = {{ paddingTop: 50}}>
-                    <PieChart
-                    style={{ height: 200 }}
-                    valueAccessor={({ item }) => item.amount}
-                    data={data}
-                    spacing={0}
-                    outerRadius={'95%'}
-                    >
-                    <Labels/>
-                    </PieChart>
-                </View>         
+                <View style={{ paddingTop: 50, flexDirection: 'row' }}>
+                    <View style = {{ flex:2}}>
+                        <PieChart
+                        style={{ height: 200 }}
+                        valueAccessor={({ item }) => item.amount}
+                        data={data}
+                        spacing={0}
+                        outerRadius={'95%'}
+                        >
+                            <Labels/>
+                        </PieChart>
+                    </View> 
+                    <View style = {{ flex:1}}> 
+                        <Text style={{color: '#600080'}}>
+                            {this.state.toponeName}
+                        </Text>
+                        <Text style={{color: '#9900cc'}}>
+                            {this.state.toptwoName}
+                        </Text>
+                        <Text style={{color: '#c61aff'}}>
+                            {this.state.topthreeName}
+                        </Text>
+                        <Text style={{color: '#d966ff'}}>
+                            {this.state.topfourName}
+                        </Text>
+                        <Text style={{color: '#ecb3ff'}}>
+                            {this.state.topfiveName}
+                        </Text>
+                        <Text style={{color: 'red'}}>
+                            others
+                        </Text>
+                    </View>  
+                </View>       
             </Container>
         )
     }

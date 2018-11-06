@@ -85,7 +85,7 @@ export default class ProfileTab extends React.Component {
                     </Left>
                     <Body>
                         <Text>
-                        Search
+                            Profile
                         </Text>
                     </Body>
                     <Right>
