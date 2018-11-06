@@ -42,9 +42,6 @@ const Profile = createStackNavigator({
   Profile: {
     screen: ProfileTab
   },
-  Notification: {
-    screen: NotificatinTab
-  },
   Stars: {
     screen: Stars
   },

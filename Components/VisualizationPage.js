@@ -30,6 +30,7 @@ export default class VisualizationPage extends React.Component {
             }
             authorLogin = authorLogin.slice(-5);
             total = total.slice(-5);
+            let others = totalCommits - total[0] - total[1]- total[2] - total[3]- total[4];
             this.setState({
                 topone : total[4],
                 toptwo : total[3],
@@ -40,7 +41,8 @@ export default class VisualizationPage extends React.Component {
                 toptwoName : authorLogin[3],
                 topthreeName : authorLogin[2],
                 topfourName : authorLogin[1],
-                topfiveName : authorLogin[0]
+                topfiveName : authorLogin[0],
+                others : others
             })
             for (let i = 0; i<5; i++) {
                 console.log(authorLogin[i]);
@@ -85,6 +87,11 @@ export default class VisualizationPage extends React.Component {
                 key: 5,
                 amount: this.state.topfive,
                 svg: { fill: '#ecb3ff' }
+            },
+            {
+                key: 6,
+                amount: this.state.others,
+                svg: { fill: 'red' }
             }
         ]
 
